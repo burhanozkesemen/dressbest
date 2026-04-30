@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
   %% Roles (visual grouping)
   subgraph R1[PAZARLAMA & SATIŞ / MÜŞTERİ TEMSİLCİSİ]
