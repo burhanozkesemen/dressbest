@@ -1,85 +1,106 @@
 ```mermaid
-graph TD
-    %% Belge Bilgileri
-    subgraph Belge_Kutusu ["SİPARİŞ İŞ AKIŞI - Doküman No: IA.02 - Yayın: 30.11.2008"]
-        direction TB
-        info1[Revizyon No: 0]
-        info2[Sayfa Sayısı: 4]
-    end
+flowchart TD
+  %% Roles (visual grouping)
+  subgraph R1[PAZARLAMA & SATIŞ / MÜŞTERİ TEMSİLCİSİ]
+    A1[Başlat: Müşteri İletişimi]
+    A2[Bilgi Toplama<br/>Yatak & personel sayısı, zincir profili]
+    A3[Fiyat Politikası ile Değerlendirme]
+    A4[Teklif Hazırlama<br/>Tasarım Fiyat Teklifi]
+  end
 
-    %% SAYFA 1: Başlangıç ve Teklif
-    S1_Musteri([MÜŞTERİ]) --> S1_Siparis[SİPARİŞ / MÜŞTERİ TEMSİLCİSİ]
-    S1_Siparis --> S1_Gorusme[Müşteri ile görüşmeler yapılır. Departmanlar bazında personel sayısı ve beden dağılımı alınır. Tasarım ve modeller gözden geçirilerek hiyerarşik y[...]]
-    S1_Gorusme --- Tasarim_Sor[TASARIM SORUMLUSU]
-    
-    S1_Gorusme --> S1_Maliyet[Modeller, önerilen kumaş, aksesuar ve birim metrajlar bazında birim maliyetler çıkartılır. Kar marjları eklenerek satış fiyatı belirlenir ve Bütçe hazır[...]]
-    S1_Maliyet --> S1_Pazarlama[PAZARLAMA VE SATIŞ MÜDÜRÜ]
-    S1_Pazarlama --> S1_Onay{Onay Alınır}
-    S1_Onay --> S1_Butce[BÜTÇE]
-    S1_Butce --> S1_Musteri_Onay[MÜŞTERİ]
+  subgraph R2[TASARIM SORUMLUSU]
+    B1[Konsept Tasarım Çalışması]
+    B2[Sunum Dosyası Hazırlama]
+    B3[Çizimler ve Renklendirme]
+    B4[Tasarım Revizyonları]
+    B5[Tasarım Dosyası Teslimi]
+  end
 
-    %% SAYFA 2: Müşteri Değerlendirme ve Sözleşme
-    S1_Musteri_Onay -- "a" --> S2_Degerlendirme[Müşteri teklifi değerlendirir. Gerekli durumlarda Bütçe revize edilir.]
-    S2_Degerlendirme --> S2_Soru{Teklif Hakkında Bilgi}
-    
-    S2_Soru -- Hayır --> S2_Dosya_Kapat[Müşteri ile görüşülerek teklifin niçin kabul edilmediği öğrenilir ve dosya kapatılır]
-    S2_Soru -- Evet --> S2_Sozlesme[Müşteri ile görüşülerek Sözleşme imzalanır ve ön ödeme alınır]
+  subgraph R3[MÜŞTERİ]
+    C1[Müşteri Teklifi Değerlendirir]
+    C2[Olumlu]
+    C3[Olumsuz]
+    C4[Geri Bildirim<br/>Kabul Nedenleri]
+  end
 
-    subgraph S2_Finans ["Finansal Kayıt"]
-        S2_Sozlesme --> S2_Butce_Suret[BÜTÇE Suret]
-        S2_Sozlesme --> S2_Soz_Suret[SÖZLEŞME Suret]
-        S2_Sozlesme --> S2_On_Odeme[Ön Ödeme Bilgisi]
-        S2_Butce_Suret & S2_Soz_Suret & S2_On_Odeme --- Muhasebe[MUHASEBE SORUMLUSU]
-    end
+  subgraph R4[MUHASEBE]
+    D1[Sözleşme ve Ön Ödeme Alımı]
+    D2[Fatura Kesimi]
+    D3[SAP Bilgilendirmesi<br/>Ödeme alındığında]
+  end
 
-    %% El Yazısı Notu
-    S2_Finans -.-> Note1["<i>Not: Bütçe Hangisi?</i>"]
+  %% Documents / Ekler
+  Offer[Doküman<br/>Tasarım Fiyat Teklifi]
+  Contract[Doküman<br/>Tasarım ve Danışmanlık Sözleşmesi]
+  DesignFile[Doküman<br/>Tasarım Dosyası]
+  Invoice[Doküman<br/>Fatura]
+  Samples[Numune<br/>Kumaş / Aksesuar Numuneleri ve Fiyatlar]
+  SalesBrief[Satis Brief]
+  DesignSample[Tasarım Numunesi<br/>Gerekirse]
 
-    %% SAYFA 3: Teknik Hazırlık ve Kitapçık
-    S2_Sozlesme --> S3_Kitapcik[Kesinleşmiş modeller, kumaş ve aksesuarlar ile ilgili tüm teknik bilgileri içeren kitapçık hazırlanır ve müşteriye gönderilir]
-    S3_Kitapcik --- S3_Tasarim_Kitap[TASARIM KİTAPÇIĞI]
-    S3_Tasarim_Kitap --- S3_Tasarim_Sor[TASARIM SORUMLUSU]
+  %% Akış
+  A1 --> A2
+  A2 --> A3
+  A3 --> A4
+  A4 --> Offer
+  A4 --> C1
 
-    S3_Kitapcik -- "c" --> S3_Maliyet_Form[Modellere İlişkin Maliyet Formları]
-    S3_Maliyet_Form --> S3_Planlama_C[BÜTÇE Fiatsız / TASARIM KİTAPÇIĞI]
-    S3_Planlama_C --> S3_Planlama_Sor[PLANLAMA SATINALMA SORUMLUSU]
-    S3_Planlama_Sor --> S3_Is_Akisi_C["PLANLAMA SATINALMA İŞ AKIŞI"]
+  C1 -->|Olumlu| C2
+  C1 -->|Olumsuz| C3
 
-    S3_Kitapcik -- "d" --> S3_Modelist_D[TASARIM MODELHANESİ MODELİSTİ]
+  %% Olumlu akış
+  C2 --> D1
+  D1 --> Contract
+  D1 -->|Ön ödeme alındı mı?| PayCheck{Ön ödeme alındı mı?}
+  PayCheck -->|Evet| B1
+  PayCheck -->|Hayır| WaitPay[Ön ödeme beklenir]
 
-    S3_Kitapcik -- "e" --> S3_Butce_E[BÜTÇE Fiatsız]
-    S3_Butce_E --> S3_Kalıp_E[Gelen bilgiler doğrultusunda modellerin ana kalıpları çıkartılır]
+  WaitPay -->|Ön ödeme alındığında| B1
 
-    %% SAYFA 4: Ölçü Alma ve Üretim Hazırlığı
-    S3_Kalıp_E --> S4_Olcu_Basla[Ölçü alma işlemleri başlatılır]
-    
-    S4_Olcu_Basla --> S4_Olcu1[ITKİB Ölçü Tablosuna göre personelin ölçüleri alınır]
-    S4_Olcu_Basla --> S4_Olcu2[Müşteriden alınan veya Model Dikim Sorumlusu tarafından Müşteri işyerinde alınan ölçüler personelin ismine göre Bütçeye işlenir]
-    S4_Olcu_Basla --> S4_Olcu3[DRESSBEST Size Setine göre personelin ölçüleri]
+  B1 --> B2
+  B2 --> B3
+  B3 --> DesignSample
+  B3 --> B2
+  B3 --> Presentation[Sunum Müşteriye Yapılır]
+  Presentation --> C4
+  C4 --> B4
+  B4 --> B5
+  B5 --> DesignFile
+  B5 --> D2
+  D2 --> Invoice
+  D2 --> D3
+  D3 --> End[Proje Kapanışı]
 
-    S4_Olcu1 & S4_Olcu2 --> S4_Beden_List[Personel Beden Ölçüleri Listesi]
-    S4_Olcu3 --- S4_Model_Dikim_Sor[MODEL DİKİM SORUMLUSU]
+  %% Olumsuz akış
+  C3 --> Samples
+  Samples --> OfferReview[Teklifin neden kabul edilmediği görüşülür]
+  OfferReview --> FileClose[Dosya kapatılır veya revize edilir]
+  FileClose --> End
 
-    S4_Beden_List -- "f" --> S4_Siparis_Form_F[SİPARİŞ FORMU]
-    S4_Siparis_Form_F --> S4_Butce_F[BÜTÇE Beden Dağılımı - Fiatsız]
-    S4_Butce_F --> S4_Planlama_Sor_F[PLANLAMA SATINALMA SORUMLUSU]
-    S4_Planlama_Sor_F --> S4_Uretim_Akis["SİPARİŞ ÜRETİM İŞ AKIŞI"]
+  %% İlgili doküman bağlantıları
+  Offer --> SalesBrief
+  DesignFile --> Invoice
+  Contract --> D1
 
-    S4_Beden_List -- "g" --> S4_Siparis_Form_G[SİPARİŞ FORMU]
-    S4_Siparis_Form_G --> S4_Modelist_G[MODELİST]
-    S4_Modelist_G --> S4_Final[Siparişe ilişkin modellerin kalıpları çıkartılır ve serilendirmeleri yapılır. Pastal hazırlanır. İşaret ve çizim kalıpları çıkartılır. Dikiş Ta[...]]
+  %% İyileştirme / Yapılacaklar (Süreç dışı ama bağlı)
+  subgraph Improvements[Yapılacaklar / Süreç İyileştirme]
+    I1[Tasarım PDF'lerinin sadeleştirilmesi<br/>Merkezi depolama]
+    I2[Müşteri brieflerinin yeni formata geçirilmesi]
+    I3[Müşteri kontratlarının merkezi toplanacağı yer<br/>Dubai benzeri]
+    I4[Satış ve Tasarım için aynı kod/etiketleme sistemi]
+  end
 
-    %% Görseldeki Notlar
-    subgraph El_Yazisi_Notlar ["Görsel Üzerindeki Notlar"]
-        direction TB
-        N1[Yeni dosya olacak?]
-        N2[Fatma uygun]
-        N3[Satış emirleri ve Üretim İş emirleri uygun]
-    end
+  %% Bağlantılar: iyileştirmeler sürece etki eder
+  I1 -.-> B2
+  I2 -.-> A4
+  I3 -.-> D1
+  I4 -.-> A3
 
-    %% Stil
-    style S1_Onay fill:#fff,stroke:#000
-    style S2_Soru fill:#fff,stroke:#000
-    style S3_Is_Akisi_C fill:#fff9c4,stroke:#fbc02d
-    style S4_Uretim_Akis fill:#fff9c4,stroke:#fbc02d
-```
+  %% Görüşme / geri bildirim döngüsü
+  Presentation -->|Geri bildirim| C4
+  C4 -->|Kritikler alındı| B4
+  B4 -->|Değişiklik yapıldı| B3
+
+  %% Notlar
+  classDef doc fill:#f9f,stroke:#333,stroke-width:1px;
+  class Offer,Contract,DesignFile,Invoice,Samples,SalesBrief,DesignSample doc;
